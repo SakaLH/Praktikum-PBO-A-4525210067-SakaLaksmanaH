@@ -10,7 +10,14 @@ class RekeningBank
     // TODO 1: ganti angka ajaib berikut menjadi konstanta bernama.
     //   bunga tahunan 0.025 · biaya admin 5000 · batas penarikan 5000000
 
+    private const bunga_tabungan = 0.025;
+    private const biaya_admin = 5000;
+    private const batas_penarikan = 5000000;
+    
+
     // TODO 2: deklarasikan properti statis penghitung jumlah rekening.
+
+    private static int $jumlahRekening = 0;
 
     private float $saldo;
 
@@ -24,7 +31,14 @@ class RekeningBank
         private readonly string $pemilik,
         float $saldoAwal = 0,
     ) {
+        if ($nomor === '') {
+            throw new InvalidArgumentException('Nomor rekening tidak boleh kosong');
+        }
+        if ($saldoAwal < 0) {
+            throw new InvalidArgumentException('Saldo awal rekening tidak boleh negatif');
+        }
         $this->saldo = $saldoAwal;
+        self::$jumlahRekening++;
     }
 
     /**
@@ -34,34 +48,48 @@ class RekeningBank
      */
     public static function rekeningPelajar(string $nomor, string $pemilik): static
     {
-        throw new RuntimeException('TODO 5 belum dikerjakan');
+        return new static($nomor, $pemilik);
     }
 
     public function setor(float $jumlah): void
     {
         // TODO 6
+        if ($jumlah <= 0) {
+            throw new InvalidArgumentException('Jumlah setor harus lebih besar dari nol');
+        }
+        $this->saldo += $jumlah;
     }
 
     public function tarik(float $jumlah): void
     {
         // TODO 7: tolak <= 0, tolak melebihi saldo, tolak melebihi batas sekali tarik.
+        if ($jumlah <= 0) {
+            throw new InvalidArgumentException('Jumlah tarik harus lebih besar dari nol');
+        }
+        if ($jumlah > $this->saldo) {
+            throw new InvalidArgumentException('Jumlah tarik tidak boleh lebih besar dari saldo');
+        }
+        if ($jumlah > self::batas_penarikan) {
+            throw new InvalidArgumentException('Jumlah tarik tidak boleh lebih besar dari batas sekali tarik');
+        }
     }
 
     /** TODO 8 */
     public function potongBiayaAdmin(): void
     {
+        $this->saldo -= self::biaya_admin;
     }
 
     /** TODO 9 */
     public static function getJumlahRekening(): int
     {
-        return -1;   // ganti
+        return self::$jumlahRekening;
     }
 
     /** TODO 10 */
     public static function bungaSetahun(float $pokok): float
     {
-        return 0;   // ganti
+        return $pokok * self::bunga_tabungan;
     }
 
     public function getSaldo(): float { return $this->saldo; }
