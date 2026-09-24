@@ -15,6 +15,9 @@ public abstract class Pegawai {
 
     protected Pegawai(String nip, String nama, double gajiPokok) {
         // TODO 1: tolak gaji pokok negatif.
+        if (gajiPokok < 0) {
+            throw new IllegalArgumentException("Gaji pokok tidak boleh negatif");
+        }
 
         this.nip = nip;
         this.nama = nama;
@@ -23,17 +26,22 @@ public abstract class Pegawai {
 
     /**
      * TODO 2: perilaku dasar — kembalikan gaji pokok apa adanya.
-     *         Turunan akan MENAMBAH, bukan mengganti seluruhnya.
+     * Turunan akan MENAMBAH, bukan mengganti seluruhnya.
      */
     public double hitungGaji() {
-        return 0;   // ganti
+        return gajiPokok; // ganti
     }
 
     /** Turunan wajib menyebutkan jenisnya sendiri. */
     public abstract String jenis();
 
-    public String getNama() { return nama; }
-    public String getNip()  { return nip; }
+    public String getNama() {
+        return nama;
+    }
+
+    public String getNip() {
+        return nip;
+    }
 
     @Override
     public String toString() {
